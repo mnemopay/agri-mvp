@@ -1,6 +1,3 @@
--- Create extension if needed (logistics)
-CREATE EXTENSION IF NOT EXISTS postgis;
-
 -- Create databases for each service
 CREATE DATABASE marketplace_db;
 CREATE DATABASE ai_db;

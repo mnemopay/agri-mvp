@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgis/postgis:15-3.4-alpine
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -12,6 +10,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -35,15 +38,18 @@ services:
       dockerfile: ./services/marketplace-service/Dockerfile
     env_file: .env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   ai-migrator:
     image: node:20-alpine
     working_dir: /app
     env_file: .env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - ./services/ai-service:/app
       - ./shared/events:/app/shared/events
@@ -55,9 +61,12 @@ services:
       dockerfile: ./services/ai-service/Dockerfile
     env_file: .env
     depends_on:
-      - redis
-      - postgres
-      - ai-migrator
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      ai-migrator:
+        condition: service_completed_successfully
     volumes:
       - ai_models:/models
 
@@ -67,8 +76,10 @@ services:
       dockerfile: ./services/ingestion-service/Dockerfile
     env_file: .env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   logistics-service:
     build:
@@ -76,8 +87,10 @@ services:
       dockerfile: ./services/logistics-service/Dockerfile
     env_file: .env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   payment-service:
     build:
@@ -85,8 +98,10 @@ services:
       dockerfile: ./services/payment-service/Dockerfile
     env_file: .env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
 volumes:
   postgres_data:
