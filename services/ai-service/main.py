@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 from ai_db_client import upsert_price_history, upsert_weather_features, get_price_history, get_weather_features, upsert_model_metadata
 
-load_dotenv(dotenv_path='../../.env')
+load_dotenv()
 
 app = FastAPI()
 

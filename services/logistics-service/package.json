@@ -1,0 +1,17 @@
+{
+  "name": "logistics-service",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "fastify": "^4.24.0",
+    "knex": "^3.0.1",
+    "pg": "^8.11.3",
+    "dotenv": "^16.3.0",
+    "uuid": "^9.0.1",
+    "@agri-mvp/shared-events": "file:../../shared/events"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "knex migrate:latest"
+  }
+}
