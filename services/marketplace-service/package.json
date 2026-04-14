@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "migrate": "knex migrate:latest"
+    "migrate": "knex migrate:latest",
+    "seed": "node ../../shared/seed/seed.js"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "ai-service",
+  "version": "1.0.0",
+  "main": "main.py",
+  "dependencies": {},
+  "scripts": {},
+  "devDependencies": {},
+  "private": true
+}

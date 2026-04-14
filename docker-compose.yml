@@ -45,6 +45,9 @@ services:
     env_file: .env
     depends_on:
       - redis
+      - postgres
+    volumes:
+      - ai_models:/models
 
   ingestion-service:
     build:
@@ -75,3 +78,4 @@ services:
 
 volumes:
   postgres_data:
+  ai_models:
