@@ -7,7 +7,7 @@ module.exports = {
     port: process.env.DB_PORT || 5432,
     user: process.env.DB_USER || 'admin',
     password: process.env.DB_PASSWORD || 'password',
-    database: process.env.AI_DB || 'ai_db',
+    database: 'ai_db',
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
   },
   migrations: {
