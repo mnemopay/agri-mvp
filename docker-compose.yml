@@ -11,10 +11,11 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL","pg_isready -U admin"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U admin -d logistics_db"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 30
+      start_period: 60s
 
   redis:
     image: redis:7-alpine
@@ -37,6 +38,7 @@ services:
       context: .
       dockerfile: ./services/marketplace-service/Dockerfile
     env_file: .env
+    restart: on-failure:10
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,6 +49,7 @@ services:
     image: node:20-alpine
     working_dir: /app
     env_file: .env
+    restart: on-failure:10
     depends_on:
       postgres:
         condition: service_healthy
@@ -60,13 +63,12 @@ services:
       context: .
       dockerfile: ./services/ai-service/Dockerfile
     env_file: .env
+    restart: on-failure:10
     depends_on:
       redis:
         condition: service_started
       postgres:
         condition: service_healthy
-      ai-migrator:
-        condition: service_completed_successfully
     volumes:
       - ai_models:/models
 
@@ -75,6 +77,7 @@ services:
       context: .
       dockerfile: ./services/ingestion-service/Dockerfile
     env_file: .env
+    restart: on-failure:10
     depends_on:
       postgres:
         condition: service_healthy
@@ -86,6 +89,7 @@ services:
       context: .
       dockerfile: ./services/logistics-service/Dockerfile
     env_file: .env
+    restart: on-failure:10
     depends_on:
       postgres:
         condition: service_healthy
@@ -97,6 +101,7 @@ services:
       context: .
       dockerfile: ./services/payment-service/Dockerfile
     env_file: .env
+    restart: on-failure:10
     depends_on:
       postgres:
         condition: service_healthy
